@@ -1,0 +1,10 @@
+ccxt>=4.1.0
+pandas>=2.2.0
+pyarrow>=14.0.2
+loguru>=0.7.2
+python-dotenv>=1.0.1
+pydantic>=2.6.1
+backtrader==1.9.78.123
+matplotlib>=3.8.0
+pandas-ta>=0.3.14b0
+PyYAML>=6.0.1

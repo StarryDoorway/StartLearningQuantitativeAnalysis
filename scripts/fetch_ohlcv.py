@@ -11,8 +11,9 @@ from typing import List, Optional
 import ccxt
 import pandas as pd
 from loguru import logger
-from dotenv import load_dotenv
 import yaml
+
+from src.exchanges.okx_client import OkxClient
 
 
 def load_settings(settings_path: str) -> dict:
@@ -62,33 +63,8 @@ def ensure_dir(path: str) -> None:
 
 
 def init_okx() -> ccxt.okx:
-    load_dotenv(os.path.join('config', '.env'))
-    api_key = os.getenv('OKX_API_KEY')
-    secret = os.getenv('OKX_SECRET_KEY')
-    passphrase = os.getenv('OKX_PASSPHRASE')
-    testnet = os.getenv('OKX_TESTNET', 'true').lower() == 'true'
-
-    http_proxy = os.getenv('HTTP_PROXY') or None
-    https_proxy = os.getenv('HTTPS_PROXY') or None
-
-    exchange = ccxt.okx({
-        'apiKey': api_key or '',
-        'secret': secret or '',
-        'password': passphrase or '',
-        'enableRateLimit': True,
-        'options': {
-            'defaultType': 'swap',  # 永续合约
-        },
-        'proxies': {
-            'http': http_proxy,
-            'https': https_proxy,
-        } if (http_proxy or https_proxy) else None,
-    })
-    # 模拟盘开关（仅对私有/交易接口生效；公共行情也可保留此头部）
-    if testnet:
-        exchange.headers = exchange.headers or {}
-        exchange.headers['x-simulated-trading'] = '1'
-    return exchange
+    # Use public-only client for OHLCV to avoid auth/headers issues
+    return OkxClient(public_only=True).exchange
 
 
 def fetch_ohlcv_all(
@@ -115,7 +91,7 @@ def fetch_ohlcv_all(
         if last_ts <= current_since:
             break
         current_since = last_ts + 1
-        time.sleep(exchange.rateLimit / 1000.0)
+        time.sleep((exchange.rateLimit or 100) / 1000.0)
     return all_rows
 
 

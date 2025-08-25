@@ -12,20 +12,20 @@ class OkxClient:
         load_dotenv(os.path.join('config', '.env'))
         http_proxy = os.getenv('HTTP_PROXY') or None
         https_proxy = os.getenv('HTTPS_PROXY') or None
+        testnet = (os.getenv('OKX_TESTNET', 'true').lower() == 'true')
 
         opts = {
             'enableRateLimit': True,
             'options': {'defaultType': 'swap'},
             'proxies': {'http': http_proxy, 'https': https_proxy} if (http_proxy or https_proxy) else None,
+            'sandbox': testnet,
         }
 
         if public_only:
             self.exchange = ccxt.okx(opts)
             return
 
-        testnet = (os.getenv('OKX_TESTNET', 'true').lower() == 'true')
         passphrase = os.getenv('OKX_PASSPHRASE') or ''
-
         if testnet:
             print("Using OKX testnet mode")
             api_key = os.getenv('OKX_API_KEY_TEST') or ''

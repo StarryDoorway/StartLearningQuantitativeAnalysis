@@ -9,77 +9,60 @@ pip install -r requirements.txt
 ```
 
 ### 2. 配置 OKX 密钥（支持模拟盘/真盘切换）
-- 新建 `config/.env` 并填写以下变量：
-```
-# 切换环境：模拟盘 true；真盘 false
-OKX_TESTNET=true
+- 新建 `config/.env` 并填写：`OKX_TESTNET`、`OKX_API_KEY[_TEST]`、`OKX_SECRET_KEY[_TEST]`、`OKX_PASSPHRASE`（详见文件内注释）
 
-# 模拟盘（Demo Trading）API（若使用模拟盘）
-OKX_API_KEY_TEST=
-OKX_SECRET_KEY_TEST=
-
-# 真盘 API（若使用真盘）
-OKX_API_KEY=
-OKX_SECRET_KEY=
-
-# 两个环境共用或分别设置的口令
-OKX_PASSPHRASE=
-
-# 可选代理
-HTTP_PROXY=
-HTTPS_PROXY=
-```
-- 客户端会根据 `OKX_TESTNET` 自动选择对应的 Key，并打印当前模式（testnet/production）。
-- 市场元数据同步脚本使用公共接口，无需密钥。
-
-### 3. 同步交易所市场元数据（精度/最小下单量等）
+### 3. 同步市场元数据（无密钥）
 ```bash
-python scripts/sync_okx_markets.py
-# 输出：config/okx_markets.json
+python -m scripts.sync_okx_markets
+# 或：python scripts/sync_okx_markets.py
 ```
 
-### 4. 拉取历史 K 线数据（CCXT）
+### 4. 拉取历史 K 线（CCXT 公共接口）
 ```bash
-python scripts/fetch_ohlcv.py \
-  --symbols BTC/USDT:USDT ETH/USDT:USDT \
-  --timeframes 5m 1h \
-  --since 2024-01-01
+python -m scripts.fetch_ohlcv --symbols BTC/USDT:USDT --timeframes 5m --since 2024-01-01
 ```
 
 ### 5. 回测（Backtrader）
 ```bash
-python scripts/run_backtest.py --symbol-slug btc-usdt-usdt --timeframe 5m --cash 10000 --commission 0.0005 --plot
+python -m scripts.run_backtest --symbol-slug btc-usdt-usdt --timeframe 5m --cash 10000 --commission 0.0005 --plot
 ```
 
-### 6. 纸交易/实盘执行器（最小可用）
+### 6. 纸交易/实盘执行（统一用 src 模块）
 ```bash
-python scripts/order_executor.py --side buy --type limit --price 30000 --paper
+# 纸交易
+python -m scripts.order_executor --side buy --type limit --price 30000 --paper
+# 真盘（谨慎）
+python -m scripts.order_executor --side buy --type limit --price 30000
 ```
 
-### 7. 实时轮询 Runner（EMA+RSI 示例）
+### 7. 实时轮询 Runner（EMA+RSI）
 ```bash
 python live/runner_ema_rsi.py --paper --timeframe 5m --loop --interval-seconds 30
 ```
 
-### 8. Freqtrade 模板（OKX）
-见 `freqtrade/` 目录（dry-run 默认）。
-
-### 9. 目录结构（节选）
+### 8. 项目结构（核心逻辑集中在 src）
 ```
+src/
+  ├─ exchanges/okx_client.py     # 统一 OKX 客户端（testnet/真盘自动选择）
+  └─ utils/
+       ├─ precision.py           # 精度与最小下单量校验
+       └─ risk.py                # 基础风控
+scripts/
+  ├─ __init__.py
+  ├─ sync_okx_markets.py         # 公共接口获取市场元数据（无密钥）
+  ├─ fetch_ohlcv.py              # OHLCV 抓取（公共接口）
+  ├─ run_backtest.py             # Backtrader 回测
+  └─ order_executor.py           # 纸/实盘执行
+live/
+  ├─ runner_ema_rsi.py           # 简易实时策略执行（轮询）
+  └─ state/
+strategies/
+  └─ ema_rsi_backtrader.py
+freqtrade/
+  ├─ config_okx_example.json
+  └─ strategies/EmaRsiFtStrategy.py
 config/
   ├─ settings.yaml
-  ├─ okx_markets.json
-  └─ trading.yaml
-scripts/
-  ├─ fetch_ohlcv.py
-  ├─ run_backtest.py
-  ├─ sync_okx_markets.py
-  ├─ check_account.py
-  └─ order_executor.py
-src/
-  ├─ exchanges/okx_client.py
-  └─ utils/{precision.py,risk.py}
-live/
-  ├─ runner_ema_rsi.py
-  └─ state/
+  ├─ trading.yaml
+  └─ okx_markets.json
 ```

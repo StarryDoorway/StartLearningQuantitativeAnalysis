@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 class OkxClient:
     def __init__(self, public_only: bool = False):
-        load_dotenv(os.path.join('config', '.env'))
+        load_dotenv(os.path.join('src/config', '.env'))
         http_proxy = os.getenv('HTTP_PROXY') or None
         https_proxy = os.getenv('HTTPS_PROXY') or None
         testnet = (os.getenv('OKX_TESTNET', 'true').lower() == 'true')

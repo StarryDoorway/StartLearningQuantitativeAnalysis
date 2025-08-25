@@ -17,9 +17,9 @@ from typing import Any, Dict
 import yaml
 from loguru import logger
 
-from live.okx_client import OkxClient
-from live.risk import RiskManager, RiskConfig
-from live.precision import round_price_amount, satisfies_min_limits
+from src.exchanges.okx_client import OkxClient
+from src.utils.risk import RiskManager, RiskConfig
+from src.utils.precision import round_price_amount, satisfies_min_limits
 
 
 def load_markets_json() -> Dict[str, Any]:
@@ -46,17 +46,14 @@ def main():
     parser.add_argument('--paper', action='store_true', help='Paper mode (no real orders)')
     args = parser.parse_args()
 
-    # Load configs and market meta
     markets = load_markets_json()
     trading = load_trading_cfg()
     symbol = trading['symbol']
 
     client = OkxClient()
-    # balance
     bal = client.fetch_balance()
     usdt_free = float(bal.get('free', {}).get('USDT', 0.0))
 
-    # risk
     rcfg = RiskConfig(
         max_position_notional_usdt=float(trading['max_position_notional_usdt']),
         max_order_notional_usdt=float(trading['max_order_notional_usdt']),
@@ -64,30 +61,26 @@ def main():
     )
     rman = RiskManager(rcfg)
 
-    # market info
     market = markets.get(symbol)
     if market is None:
         raise KeyError(f"Symbol {symbol} not found in okx_markets.json. Run sync script.")
 
-    # compute order size
     notional = rman.compute_order_notional(usdt_free)
     if notional <= 0:
         logger.error('No free USDT to allocate')
         sys.exit(1)
 
-    # price
     price = args.price
     if args.type_ == 'limit' and (price is None or price <= 0):
         logger.error('Limit order requires --price > 0')
         sys.exit(1)
 
-    # For market orders, approximate price via ticker (fallback to last known close would be better)
     if args.type_ == 'market' and price is None:
         try:
             ticker = client.exchange.fetch_ticker(symbol)
             price = float(ticker['last'])
         except Exception as e:
-            logger.warning(f"fetch_ticker failed, fallback to notional/price estimate needed: {e}")
+            logger.warning(f"fetch_ticker failed: {e}")
             price = None
 
     if price is None or price <= 0:
@@ -96,22 +89,20 @@ def main():
 
     amount = notional / price
 
-    # round to precision and check min limits
     price, amount = round_price_amount(market, price, amount)
     if not satisfies_min_limits(market, price, amount):
         logger.error(f"Order fails min limits. price={price}, amount={amount}")
         sys.exit(1)
 
-    # idempotent client order id
     client_oid = f"quant-{uuid.uuid4().hex[:18]}"
 
     params = {
-        'tdMode': trading.get('td_mode', 'cross'),  # cross/isolated
+        'tdMode': trading.get('td_mode', 'cross'),
         'clOrdId': client_oid,
     }
     pos_side = (trading.get('pos_side') or '').strip()
     if pos_side:
-        params['posSide'] = pos_side  # long/short (hedge mode)
+        params['posSide'] = pos_side
     if trading.get('reduce_only'):
         params['reduceOnly'] = True
     if trading.get('post_only') and args.type_ == 'limit':

@@ -18,9 +18,9 @@ import pandas as pd
 from loguru import logger
 from dotenv import load_dotenv
 
-from live.okx_client import OkxClient
-from live.risk import RiskManager, RiskConfig
-from live.precision import round_price_amount, satisfies_min_limits
+from src.exchanges.okx_client import OkxClient
+from src.utils.risk import RiskManager, RiskConfig
+from src.utils.precision import round_price_amount, satisfies_min_limits
 
 
 STATE_DIR = os.path.join('live', 'state')

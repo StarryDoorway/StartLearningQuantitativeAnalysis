@@ -1,11 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import os
+import sys
+# Ensure project root is on sys.path
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
+
 import json
 from typing import Dict, Any
 
 from loguru import logger
 
-from live.okx_client import OkxClient
+from src.exchanges.okx_client import OkxClient
 
 
 def to_export_fields(market: Dict[str, Any]) -> Dict[str, Any]:
@@ -33,7 +41,7 @@ def to_export_fields(market: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def main():
-    client = OkxClient()
+    client = OkxClient(public_only=True)
     markets = client.load_markets()
     export = {sym: to_export_fields(m) for sym, m in markets.items()}
     out_path = os.path.join('config', 'okx_markets.json')

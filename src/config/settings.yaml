@@ -1,0 +1,20 @@
+# 通用数据采集配置
+
+base_dir: data/raw
+symbols:
+  - "BTC/USDT:USDT"   # OKX USDT 本位永续
+  - "ETH/USDT:USDT"
+
+timeframes:
+  - "5m"
+  - "1h"
+
+# 起始时间（UTC ISO8601），也可通过命令行 --since 覆盖
+start_time: "2024-01-01T00:00:00Z"
+
+# 每次请求最大 K 线数量（OKX 常见限制为 100）
+max_candles_per_request: 100
+
+# 费率与回测假设（回测脚本可覆盖）
+commission: 0.0005   # 假设 taker 费率 5bps
+slippage: 0.0005      # 50bps 千分之五（示例），实际请根据流动性调整

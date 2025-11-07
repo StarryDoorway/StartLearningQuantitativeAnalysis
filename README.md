@@ -43,7 +43,7 @@ python -m src.scripts.sync_okx_markets
 ```bash
 python -m src.scripts.fetch_ohlcv \
   --symbols BTC/USDT:USDT ETH/USDT:USDT \
-  --timeframes 5m 1h \
+  --timeframes 5m 15m 1h 4h 1d\
   --since 2024-01-01
 # 输出到：src/data/raw/<symbol-slug>/<timeframe>.parquet
 ```

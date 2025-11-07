@@ -14,7 +14,7 @@ from src.strategies.ema_rsi_backtrader import EmaRsiStrategy
 
 class PandasDataFeed(bt.feeds.PandasData):
     params = (
-        ('datetime', 'datetime'),
+        ('datetime', None),  # 使用索引作为datetime
         ('open', 'open'),
         ('high', 'high'),
         ('low', 'low'),
@@ -28,8 +28,8 @@ def load_parquet(symbol_slug: str, timeframe: str) -> pd.DataFrame:
     if not os.path.exists(path):
         raise FileNotFoundError(f"Parquet not found: {path}. Run scripts/fetch_ohlcv.py first.")
     df = pd.read_parquet(path)
-    df['datetime'] = pd.to_datetime(df['timestamp'], unit='ms', utc=True)
-    df.set_index('datetime', inplace=True)
+    # 直接将timestamp转换为索引
+    df.index = pd.to_datetime(df['timestamp'], unit='ms', utc=True)
     return df[['open', 'high', 'low', 'close', 'volume']]
 
 

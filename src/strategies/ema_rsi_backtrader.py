@@ -5,11 +5,11 @@ import backtrader as bt
 
 class EmaRsiStrategy(bt.Strategy):
     params = dict(
-        fast_ema=20,
-        slow_ema=50,
-        rsi_period=14,
-        rsi_entry=52,
-        rsi_exit=48,
+        fast_ema=3,
+        slow_ema=10,
+        rsi_period=6,
+        rsi_entry=75,
+        rsi_exit=25,
         atr_period=14,
         atr_mult=2.0,
     )

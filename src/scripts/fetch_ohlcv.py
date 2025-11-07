@@ -6,6 +6,7 @@ import os
 import sys
 import time
 from datetime import datetime, timezone
+from dateutil import parser as date_parser
 from typing import List, Optional
 
 import ccxt
@@ -40,13 +41,14 @@ def timeframe_to_millis(tf: str) -> int:
 def parse_date(s: str) -> int:
     # returns milliseconds since epoch (UTC)
     try:
-        # allow YYYY-MM-DD
-        if len(s) == 10 and s[4] == '-' and s[7] == '-':
-            return int(datetime.fromisoformat(s).replace(tzinfo=timezone.utc).timestamp() * 1000)
-        # allow ISO8601
-        dt = datetime.fromisoformat(s.replace('Z', '+00:00'))
+        # 使用dateutil.parser自动解析各种日期格式
+        dt = date_parser.parse(s)
+        # 确保有时区信息，如果没有则设为UTC
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
+        else:
+            # 转换为UTC
+            dt = dt.astimezone(timezone.utc)
         return int(dt.timestamp() * 1000)
     except Exception as e:
         raise ValueError(f"Invalid date format: {s}") from e

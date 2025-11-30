@@ -1,0 +1,142 @@
+{
+  "BTC/USDT": {
+    "symbol": "BTC/USDT",
+    "id": "BTC-USDT",
+    "type": "spot",
+    "base": "BTC",
+    "quote": "USDT",
+    "contract": false,
+    "linear": null,
+    "contractSize": null,
+    "precision": {
+      "amount": 1e-08,
+      "price": 0.1
+    },
+    "limits": {
+      "amount": {
+        "min": 1e-05,
+        "max": null
+      },
+      "price": {
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "min": null,
+        "max": null
+      }
+    }
+  },
+  "DOGE/USDT": {
+    "symbol": "DOGE/USDT",
+    "id": "DOGE-USDT",
+    "type": "spot",
+    "base": "DOGE",
+    "quote": "USDT",
+    "contract": false,
+    "linear": null,
+    "contractSize": null,
+    "precision": {
+      "amount": 1e-06,
+      "price": 5e-05
+    },
+    "limits": {
+      "amount": {
+        "min": 0.01,
+        "max": null
+      },
+      "price": {
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "min": null,
+        "max": 1000000.0
+      }
+    }
+  },
+  "ETH/USDT": {
+    "symbol": "ETH/USDT",
+    "id": "ETH-USDT",
+    "type": "spot",
+    "base": "ETH",
+    "quote": "USDT",
+    "contract": false,
+    "linear": null,
+    "contractSize": null,
+    "precision": {
+      "amount": 1e-06,
+      "price": 0.01
+    },
+    "limits": {
+      "amount": {
+        "min": 0.0001,
+        "max": null
+      },
+      "price": {
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "min": null,
+        "max": null
+      }
+    }
+  },
+  "TRUMP/USDT": {
+    "symbol": "TRUMP/USDT",
+    "id": "TRUMP-USDT",
+    "type": "spot",
+    "base": "TRUMP",
+    "quote": "USDT",
+    "contract": false,
+    "linear": null,
+    "contractSize": null,
+    "precision": {
+      "amount": 0.0001,
+      "price": 0.001
+    },
+    "limits": {
+      "amount": {
+        "min": 0.1,
+        "max": null
+      },
+      "price": {
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "min": null,
+        "max": 1000000.0
+      }
+    }
+  },
+  "USDC/USDT": {
+    "symbol": "USDC/USDT",
+    "id": "USDC-USDT",
+    "type": "spot",
+    "base": "USDC",
+    "quote": "USDT",
+    "contract": false,
+    "linear": null,
+    "contractSize": null,
+    "precision": {
+      "amount": 1e-06,
+      "price": 0.0001
+    },
+    "limits": {
+      "amount": {
+        "min": 1.0,
+        "max": null
+      },
+      "price": {
+        "min": null,
+        "max": null
+      },
+      "cost": {
+        "min": null,
+        "max": 1000000.0
+      }
+    }
+  }
+}

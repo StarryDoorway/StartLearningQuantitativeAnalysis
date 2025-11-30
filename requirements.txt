@@ -6,6 +6,8 @@ python-dotenv>=1.0.1
 pydantic>=2.6.1
 backtrader==1.9.78.123
 matplotlib>=3.8.0
-pandas-ta>=0.3.14b0
 PyYAML>=6.0.1
 python-dateutil>=2.8.2
+numpy>=1.24.0
+scipy>=1.10.0
+sqlalchemy>=2.0.0

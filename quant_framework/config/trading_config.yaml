@@ -1,0 +1,65 @@
+# Quantitative Trading Framework Configuration
+# Version: 1.0.0
+
+# General settings
+framework:
+  version: "1.0.0"
+  name: "Quantitative Trading Framework"
+  log_level: "INFO"
+  
+# Data management settings
+data:
+  base_dir: "quant_framework/data/raw"
+  processed_dir: "quant_framework/data/processed"
+  features_dir: "quant_framework/data/features"
+  cache_dir: "quant_framework/storage/cache"
+  default_symbols:
+    - "BTC/USDT:USDT"
+    - "ETH/USDT:USDT"
+  default_timeframes:
+    - "5m"
+    - "15m"
+  start_time: "2024-01-01T00:00:00Z"
+  max_candles_per_request: 100
+
+# Backtesting settings
+backtest:
+  initial_cash: 10000
+  commission: 0.0005
+  slippage: 0.0005
+  default_timeframe: "1h"
+
+# Live trading settings
+live:
+  paper_mode: true
+  max_position_notional_usdt: 2000
+  max_order_notional_usdt: 500
+  order_percent_balance: 0.2
+  leverage: 2
+  reduce_only: false
+  post_only: false
+  td_mode: "cross"
+  pos_side: ""
+
+# Risk management settings
+risk:
+  max_daily_loss_percent: 0.2
+  max_drawdown_percent: 0.2
+  max_position_size_percent: 0.75
+  max_correlation_exposure: 0.3
+  
+# Analytics settings
+analytics:
+  output_dir: "quant_framework/analytics/reports"
+  benchmark: "BTC/USDT:USDT"
+  
+# Storage settings
+storage:
+  database:
+    type: "sqlite"
+    path: "quant_framework/storage/database/trading.db"
+  cache:
+    type: "redis"
+    host: "localhost"
+    port: 6379
+    db: 0

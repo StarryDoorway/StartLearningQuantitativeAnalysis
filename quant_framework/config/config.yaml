@@ -1,0 +1,31 @@
+# Secret configuration file (DO NOT commit to version control)
+# Copy this file to secrets.yaml and fill in your actual credentials
+
+# Database credentials (if using external database)
+database:
+  host: "localhost"
+  port: 5432
+  username: "your_db_username"
+  password: "your_db_password"
+  database: "trading_db"
+  
+# Cache credentials (if using external cache)
+cache:
+  host: "localhost"
+  port: 6379
+  password: "your_cache_password"
+  db: 0
+  
+# Notification settings (optional)
+notifications:
+  email:
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    username: "your_email@gmail.com"
+    password: "your_email_password"
+    from_address: "your_email@gmail.com"
+    to_addresses:
+      - "recipient@example.com"
+  telegram:
+    bot_token: "your_telegram_bot_token"
+    chat_id: "your_telegram_chat_id"
